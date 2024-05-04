@@ -1,0 +1,6 @@
+-r requirements.txt
+
+black~=24.4
+flake8~=7.0
+isort~=5.13
+mypy[sqlalchemy]~=1.10

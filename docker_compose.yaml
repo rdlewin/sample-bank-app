@@ -1,0 +1,16 @@
+version: "3"
+
+services:
+  server:
+    build: .
+    ports:
+      - "8000:80"
+    depends_on:
+      - db
+    env_file: ./.env
+
+  db:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    env_file: ./.env

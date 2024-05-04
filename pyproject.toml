@@ -1,0 +1,29 @@
+[tool.black]
+line-length = 119
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | migrations
+  | _build
+  | buck-out
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+
+[tool.mypy]
+exclude = [
+    "config",
+]
+plugins = [
+    "pydantic.mypy"
+]
+ignore_missing_imports = true
