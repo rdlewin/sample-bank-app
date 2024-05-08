@@ -4,3 +4,6 @@ black~=24.4
 flake8~=7.0
 isort~=5.13
 mypy[sqlalchemy]~=1.10
+pytest==8.2.0
+pytest-postgresql==6.0.0
+python-jose==3.3.0
