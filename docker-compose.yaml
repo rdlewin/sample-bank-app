@@ -2,15 +2,25 @@ version: "3"
 
 services:
   server:
+    container_name: entrix-server
     build: .
     ports:
       - "8000:80"
     depends_on:
       - db
     env_file: ./.env
+    environment:
+      POSTGRES_SERVER: db
 
   db:
+    container_name: entrix-postgres
     image: postgres:latest
+    volumes:
+      - db-data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     env_file: ./.env
+
+volumes:
+  db-data:
+
