@@ -1,5 +1,5 @@
 import pytest
-from sqlalchemy.exc import IntegrityError
+
 from utils import get_random_account_details, get_random_user_details
 
 
@@ -11,19 +11,21 @@ class TestAccountService:
         assert new_account.transactions_sent == []
         assert new_account.transactions_received == []
 
-    def test_unique_account_names_per_user(self, db, account_service, user):
+    def test_create_account_unique_account_names_per_user(
+        self, db, account_service, user
+    ):
         new_account = account_service.create_account(
             get_random_account_details(user_id=user.id)
         )
 
-        with pytest.raises(IntegrityError):
+        with pytest.raises(ValueError):
             account_service.create_account(
                 get_random_account_details(
                     user_id=user.id, name=new_account.name
                 )
             )
 
-    def test_unique_names_do_not_block_other_users(
+    def test_create_account_unique_names_do_not_block_other_users(
         self, account_service, user_service
     ):
         user_1 = user_service.create_user(get_random_user_details())

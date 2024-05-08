@@ -3,7 +3,7 @@ from sqlalchemy.exc import InternalError
 from sqlalchemy.orm import Session
 
 from src import schemas
-from src.models import Transaction
+from src.models import Account, Transaction
 from src.services.base import BaseService
 
 
@@ -17,16 +17,18 @@ class TransactionService(BaseService):
     def get_transactions(
         self, user_id: int, skip: int = 0, limit: int = 100
     ) -> list[Transaction]:
-        return self._get_list(
-            {
-                "OR": {
-                    "from_account.owner_id": user_id,
-                    "to_account.owner.id": user_id,
-                }
-            },
-            skip,
-            limit,
+        query = (
+            self.db.query(Transaction)
+            .join(
+                Account,
+                onclause=(
+                    (Transaction.from_account_id == Account.id)
+                    | (Transaction.to_account_id == Account.id)
+                ),
+            )
+            .filter(Account.id == user_id)
         )
+        return query.order_by("id").offset(skip).limit(limit).all()
 
     def create_transaction(
         self, transaction: schemas.TransactionBase

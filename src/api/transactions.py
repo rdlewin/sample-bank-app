@@ -29,6 +29,7 @@ def transfer_funds(
     except ValueError as e:
         logging.warning(e)
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, detail="foo"
+            status.HTTP_400_BAD_REQUEST, detail={"error": str(e)}
         )
+
     return Transaction.from_orm(result)

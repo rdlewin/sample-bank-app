@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 
 from src.core.db import get_db
@@ -45,11 +46,14 @@ def list_accounts(
     return AccountService(db).get_accounts(user_id, skip, limit)
 
 
-@router.get("/{user_id}/transactions")
+@router.get("/{user_id}/transactions", response_model=list[Transaction])
 def list_transactions(
     user_id: int,
     skip: int = 0,
     limit: int = 100,
     db: Session = Depends(get_db),
 ) -> list[Transaction]:
-    return TransactionService(db).get_transactions(user_id, skip, limit)
+    result = TransactionService(db).get_transactions(user_id, skip, limit)
+    return jsonable_encoder(result)
+    # if not result:
+    #     return JSONResponse(status_code=status.HTTP_200_OK, content=[])

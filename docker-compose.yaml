@@ -2,7 +2,7 @@ version: "3"
 
 services:
   server:
-    container_name: entrix-server
+    container_name: server
     build: .
     ports:
       - "8000:80"
@@ -13,7 +13,7 @@ services:
       POSTGRES_SERVER: db
 
   db:
-    container_name: entrix-postgres
+    container_name: postgres
     image: postgres:latest
     volumes:
       - db-data:/var/lib/postgresql/data

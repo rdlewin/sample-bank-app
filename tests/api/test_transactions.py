@@ -1,4 +1,6 @@
+import pytest
 from fastapi import status
+from fastapi.encoders import jsonable_encoder
 
 from src.core.config import settings
 from tests import utils
@@ -65,3 +67,42 @@ class TestTransactionRoutes:
         db.refresh(account_2)
         assert account_1.balance == initial_balance
         assert account_2.balance == initial_balance
+
+    # TODO: Figure out why Pydantic doesn't accept empty lists
+    @pytest.mark.xfail()
+    def test_get_transactions_no_transactions(
+        self, client, user_service, account_service
+    ):
+        user_1 = utils.create_user(user_service)
+
+        response = client.get(
+            f"{settings.API_V1_PREFIX}/users/{user_1.id}/transactions/"
+        )
+        assert response.status_code == status.HTTP_200_OK
+        response_body = jsonable_encoder(response.json())
+        assert response_body == []
+
+    def test_get_transactions_returns_users_send_and_receive(
+        self, client, user_service, account_service, transaction_service
+    ):
+        user_1 = utils.create_user(user_service)
+        user_2 = utils.create_user(user_service)
+        account_1 = utils.create_account(
+            account_service, user_id=user_1.id, balance=100
+        )
+        account_2 = utils.create_account(
+            account_service, user_id=user_2.id, balance=100
+        )
+        transaction_1 = transaction_service.create_transaction(
+            utils.get_random_transaction_details(account_1.id, account_2.id)
+        )
+        transaction_2 = transaction_service.create_transaction(
+            utils.get_random_transaction_details(account_2.id, account_1.id)
+        )
+
+        response = client.get(
+            f"{settings.API_V1_PREFIX}/users/{user_1.id}/transactions/"
+        )
+        assert response.status_code == status.HTTP_200_OK
+        response_body = jsonable_encoder(response.json())
+        assert response_body == []

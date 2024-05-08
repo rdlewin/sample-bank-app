@@ -23,7 +23,14 @@ class AccountService(BaseService):
             name=account.name,
             balance=account.balance,
         )
-        return self._create_instance(new_account)
+        from sqlalchemy.exc import IntegrityError
+
+        try:
+            return self._create_instance(new_account)
+        except IntegrityError:
+            raise ValueError(
+                f"Account {account.name} already exists for user {account.owner_id}"
+            )
 
     def delete_account(self, account_id: int):
         self._delete_instance(account_id)

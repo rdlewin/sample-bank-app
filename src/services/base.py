@@ -24,7 +24,7 @@ class BaseService:
         if filters:
             query = query.filter_by(**filters)
 
-        return query.offset(skip).limit(limit).all()
+        return query.order_by("id").offset(skip).limit(limit).all()
 
     def _create_instance(self, instance: Base):
         self.db.add(instance)

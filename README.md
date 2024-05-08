@@ -45,6 +45,8 @@ fastapi dev src/main.py
 ## API
 Once started, regardless of method, the server should be available on http://localhost:8000
 
+You can find the automatically generated Swagger documentation at http://localhost:8000/docs
+
 # Notes
 1. This server currently does not implement any security or authentication mechanisms,
    but adding a JWT-based auth system would be quite simple to implement, 
@@ -52,4 +54,5 @@ Once started, regardless of method, the server should be available on http://loc
 2. Due to SQLAlchemy being sensitive to the load order of models, they are for now all defined in [models.py](src/models.py).
    In a production-ready environment, I would refactor it properly, so they would be in separate files under the `/src/models` module.
 3. There are multiple API and unit tests that I would like to implement, but decided to cut for time. 
-   Basic functionality was tested manually. 
+4. Only basic type input validation is currently implemented.
+   e.g. validating a user's email, a transaction's amount being a positive number, etc are not currently supported. 
